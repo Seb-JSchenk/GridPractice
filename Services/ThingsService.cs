@@ -61,7 +61,7 @@ namespace GridPractice.Services
 
             Things insertedThing = new Things()
             {
-                Id = _things.Count + 2,
+                Id = _things.Count + 1,
                 Name = thingToInsert.Name,
                 Stars = thingToInsert.Stars,
                 
