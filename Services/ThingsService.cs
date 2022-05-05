@@ -19,8 +19,8 @@ namespace GridPractice.Services
                 _things = Enumerable.Range(1, 100).Select(i => new Things
                 {
                     Id = i,
-                    Name = Names[i],
-                    Stars = rng.Next(0, 5)
+                    Name = Names[rng.Next(0, 4)],
+                    Stars = rng.Next(0, 6)
                 }).ToList();
             }
 
