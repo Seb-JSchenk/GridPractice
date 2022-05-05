@@ -1,0 +1,81 @@
+﻿@page "/grid"
+
+@using GridPractice.Models
+@using GridPractice.Services
+@inject ThingsService ThingService
+
+<PageTitle>Grid</PageTitle>
+
+<h3>Grid</h3>
+
+<div class="container-fluid">
+    <div class='row my-4'>
+        <div class='col-12 col-lg-9 border-right'>
+            <TelerikGrid Data="@things" Height="100%" FilterMode="@GridFilterMode.FilterMenu"
+                         Sortable="true" Pageable="true" PageSize="50" Groupable="true" Resizable="true" Reorderable="true"
+                         OnUpdate="@UpdateHandler" OnDelete="@DeleteHandler" OnCreate="@CreateHandler" EditMode="@GridEditMode.Inline">
+                <GridColumns>
+                    <GridColumn Field="Id" Title="Number" Width="120px" Editable="false" Groupable="false" />
+                    <GridColumn Field="Name" Width="220px" />
+                    <GridColumn Field="Stars" Title="Stars?" />
+                    <GridCommandColumn Width="200px" Resizable="false">
+                        <GridCommandButton Command="Save" Icon="save" ShowInEdit="true">Update</GridCommandButton>
+                        <GridCommandButton Command="Edit" Icon="edit" Primary="true">Edit</GridCommandButton>
+                        <GridCommandButton Command="Delete" Icon="delete">Delete</GridCommandButton>
+                        <GridCommandButton Command="Cancel" Icon="cancel" ShowInEdit="true">Cancel</GridCommandButton>
+                    </GridCommandColumn>
+                </GridColumns>
+                <GridToolBar>
+                    <GridCommandButton Command="Add" Icon="plus" Primary="true">Add Forecast</GridCommandButton>
+                    <GridCommandButton Command="ExcelExport" Icon="file-excel">Export to Excel</GridCommandButton>
+                </GridToolBar>
+                <GridExport>
+                    <GridExcelExport FileName="Thing-Ratings" AllPages="true" />
+                </GridExport>
+            </TelerikGrid>
+        </div>
+    </div>
+</div>
+
+
+
+@code {
+    List<Things> things { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await GetForecasts();
+    }
+
+    async Task GetForecasts()
+    {
+        things = await ThingService.ThingsTask();
+    }
+
+    public async Task DeleteHandler(GridCommandEventArgs args)
+    {
+        Things currItem = args.Item as Things;
+
+        await ThingService.DeleteThingAsync(currItem);
+
+        await GetForecasts();
+    }
+
+    public async Task CreateHandler(GridCommandEventArgs args)
+    {
+        Things currItem = args.Item as Things;
+
+        await ThingService.InsertThingAsync(currItem);
+
+        await GetForecasts();
+    }
+
+    public async Task UpdateHandler(GridCommandEventArgs args)
+    {
+        Things currItem = args.Item as Things;
+
+        await ThingService.UpdateThingAsync(currItem);
+
+        await GetForecasts();
+    }
+}
